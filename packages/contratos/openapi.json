@@ -208,6 +208,69 @@
           "promociones"
         ]
       }
+    },
+    "/api/v1/reservaciones": {
+      "post": {
+        "operationId": "ReservasController_crear",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "description": "UUID generado por el cliente",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CrearReservaEntradaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Repetición idempotente: la misma reservación",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservaDto"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReservaDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "GA_VALIDACION | GA_CAPTCHA"
+          },
+          "409": {
+            "description": "GA_CUPO_INSUFICIENTE | GA_SALIDA_CERRADA | GA_FUERA_DE_PLAZO | GA_IDEMPOTENCIA_CONFLICTO"
+          },
+          "422": {
+            "description": "GA_LIMITE_PERSONAS | GA_LIMITE_CONTACTO | GA_PROMO_INVALIDA"
+          },
+          "429": {
+            "description": "GA_DEMASIADAS_SOLICITUDES"
+          }
+        },
+        "tags": [
+          "reservaciones"
+        ]
+      }
     }
   },
   "info": {
@@ -508,6 +571,129 @@
           "descuento_pct",
           "titulo",
           "titulo_en"
+        ]
+      },
+      "CrearReservaEntradaDto": {
+        "type": "object",
+        "properties": {
+          "salida_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "telefono": {
+            "type": "string"
+          },
+          "personas": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 30
+          },
+          "notas": {
+            "type": "string",
+            "nullable": true
+          },
+          "codigo_promo": {
+            "type": "string",
+            "nullable": true
+          },
+          "acepta_promos": {
+            "type": "boolean"
+          },
+          "idioma": {
+            "type": "string",
+            "enum": [
+              "es",
+              "en"
+            ]
+          },
+          "turnstile_token": {
+            "type": "string",
+            "description": "Token de Cloudflare Turnstile"
+          }
+        },
+        "required": [
+          "salida_id",
+          "nombre",
+          "email",
+          "telefono",
+          "personas",
+          "acepta_promos",
+          "idioma",
+          "turnstile_token"
+        ]
+      },
+      "ReservaTourDto": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "nombre_en": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "slug",
+          "nombre",
+          "nombre_en"
+        ]
+      },
+      "ReservaDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "example": "GA-1A2B3C"
+          },
+          "estado": {
+            "type": "string",
+            "example": "pendiente"
+          },
+          "fecha": {
+            "type": "string",
+            "example": "2030-06-15"
+          },
+          "tour": {
+            "$ref": "#/components/schemas/ReservaTourDto"
+          },
+          "personas": {
+            "type": "number"
+          },
+          "subtotal_q": {
+            "type": "number"
+          },
+          "descuento_q": {
+            "type": "number"
+          },
+          "total_q": {
+            "type": "number"
+          },
+          "expira_at": {
+            "type": "string",
+            "nullable": true,
+            "description": "ISO 8601 (UTC)"
+          }
+        },
+        "required": [
+          "codigo",
+          "estado",
+          "fecha",
+          "tour",
+          "personas",
+          "subtotal_q",
+          "descuento_q",
+          "total_q",
+          "expira_at"
         ]
       }
     }

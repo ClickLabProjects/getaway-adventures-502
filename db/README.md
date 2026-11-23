@@ -65,6 +65,7 @@ Se leen con `ga.config_int('<clave>')`. La API (`ga_app`) solo puede actualizar 
 | `max_personas_reserva_web` | 10 | 1-30 | Máximo de personas por reservación web |
 | `max_pendientes_por_contacto` | 2 | 1-20 | Máximo de pendientes vigentes por contacto |
 | `horas_corte_defecto` | 12 | 0-168 | Horas antes de la salida en que cierra la reserva (cada tour puede fijar `horas_corte`) |
+| `pct_max_cupo_pendiente_web` | 60 | 10-100 | % del cupo de una salida que pueden retener las pendientes (sin pagar) de la web; la API rechaza con `GA_CUPO_RETENIDO` |
 
 Cambiar un valor (al confirmarlo se marca como confirmado):
 ```
@@ -89,6 +90,16 @@ Una promo activa debe tener tour o `aplica_todos` (lo exige un CHECK). Al borrar
   (`ga.cierre_reserva`). Solo para el personal del panel, la API puede saltarse el plazo (no la salida inactiva) con
   `set local ga.permitir_fuera_de_plazo = 'on'` dentro de la transacción.
 - Confirmar o pagar una reservación en una salida ya sobrevendida está permitido: solo se revalida cuando sube la ocupación.
+
+## Consentimiento de promociones (`ga.clientes.acepta_promos`)
+- Sin ninguna baja: gana la decisión más reciente entre `consentimientos` y `reservaciones.acepta_promos`.
+- Con una baja (`origen = 'baja'`) para ese correo: la baja solo la anula un consentimiento POSTERIOR con `origen = 'panel'`
+  (o un futuro doble opt-in). Ni una reservación con `acepta_promos = true` ni un consentimiento `origen = 'reserva'` la anulan.
+- La API guarda `version_aviso` (variable `VERSION_AVISO_PRIVACIDAD`) en el consentimiento que crea al reservar.
+
+## Idempotencia de reservaciones
+`reservaciones.client_ref` (UUID v4 de la cabecera `Idempotency-Key`, único) y `reservaciones.cuerpo_hash` (SHA-256 del cuerpo
+normalizado sin el token del captcha): la misma clave con otro cuerpo da `GA_IDEMPOTENCIA_CONFLICTO`.
 
 ## Revertir la migración de correcciones de negocio
 `db:local:rollback` de `20261124120000_correcciones_negocio` falla con `down destructivo: respaldar antes` si hay filas en

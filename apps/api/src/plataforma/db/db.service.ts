@@ -30,7 +30,8 @@ export class DbService implements OnApplicationShutdown {
 
   /** Ejecuta `fn` en una transacción; si lanza, se revierte. */
   enTransaccion<T>(fn: (tx: Tx) => Promise<T>): Promise<T> {
-    return this.kysely.transaction().execute(fn);
+    // READ COMMITTED explícito: los triggers de cupo lo exigen.
+    return this.kysely.transaction().setIsolationLevel('read committed').execute(fn);
   }
 
   async comprobarConexion(): Promise<void> {

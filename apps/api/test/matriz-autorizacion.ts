@@ -17,4 +17,5 @@ export const RUTAS_PUBLICAS: string[] = [
   'GET /api/v1/tours/:slug/salidas',
   'GET /api/v1/promociones',
   'POST /api/v1/promociones/validar',
+  'POST /api/v1/reservaciones',
 ];

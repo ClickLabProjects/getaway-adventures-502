@@ -82,6 +82,7 @@ export interface ReservacionTabla {
   acepta_promos: Generated<boolean>;
   expira_at: ColumnType<Date | null, Date | string | null | undefined, Date | string | null>;
   client_ref: string | null;
+  cuerpo_hash: string | null;
 }
 
 export type RolPanel = 'dueno' | 'admin' | 'personal' | 'guia';

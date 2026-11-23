@@ -11,7 +11,7 @@ create table ga.configuracion (
     descripcion text not null,
     actualizado_en timestamptz not null default now(),
     constraint configuracion_clave_check check (clave in (
-        'horas_vencimiento_pendiente', 'max_personas_reserva_web', 'max_pendientes_por_contacto', 'horas_corte_defecto')),
+        'horas_vencimiento_pendiente', 'max_personas_reserva_web', 'max_pendientes_por_contacto', 'horas_corte_defecto', 'pct_max_cupo_pendiente_web')),
     -- El valor es siempre un entero JSON, dentro del rango de su clave.
     constraint configuracion_valor_check check (
         case
@@ -21,6 +21,7 @@ create table ga.configuracion (
             when 'max_personas_reserva_web' then (valor #>> '{}')::integer between 1 and 30
             when 'max_pendientes_por_contacto' then (valor #>> '{}')::integer between 1 and 20
             when 'horas_corte_defecto' then (valor #>> '{}')::integer between 0 and 168
+            when 'pct_max_cupo_pendiente_web' then (valor #>> '{}')::integer between 10 and 100
             else false
           end
         end)
@@ -29,7 +30,8 @@ insert into ga.configuracion (clave, valor, descripcion) values
  ('horas_vencimiento_pendiente', '24', 'Horas que una reservación pendiente retiene cupo antes de vencer.'),
  ('max_personas_reserva_web', '10', 'Máximo de personas por reservación hecha desde la web.'),
  ('max_pendientes_por_contacto', '2', 'Máximo de reservaciones pendientes vigentes por correo/teléfono.'),
- ('horas_corte_defecto', '12', 'Horas antes de la salida en que se cierra la reserva web (si el tour no define las suyas).');
+ ('horas_corte_defecto', '12', 'Horas antes de la salida en que se cierra la reserva web (si el tour no define las suyas).'),
+ ('pct_max_cupo_pendiente_web', '60', 'Porcentaje máximo del cupo de una salida que pueden retener reservaciones pendientes (sin pagar) hechas desde la web.');
 
 create table ga.configuracion_historial (
     id uuid primary key default gen_random_uuid(),
@@ -197,6 +199,7 @@ create index reservaciones_email_idx on ga.reservaciones (lower(email), created_
 -- 6. Idempotencia ---------------------------------------------------------------------------------------------
 alter table ga.reservaciones
     add column client_ref text,
+    add column cuerpo_hash text,
     add constraint reservaciones_client_ref_key unique (client_ref),
     add constraint reservaciones_client_ref_check check (length(client_ref) between 1 and 100);
 
@@ -235,12 +238,21 @@ create index consentimientos_email_idx on ga.consentimientos (lower(email), crea
 drop view ga.clientes;
 create view ga.clientes as
  select g.email, g.nombre, g.telefono, g.reservas, g.reservas_activas, g.viajeros, g.total_q, g.pagado_q,
-    -- Decisión más reciente; a igual fecha gana el consentimiento y, dentro, acepta = false.
-    coalesce((select d.acepta from (
+    -- Una baja (origen 'baja') solo la anula un consentimiento POSTERIOR de origen 'panel' (o un futuro doble opt-in):
+    -- nunca uno de origen 'reserva' ni el acepta_promos de una reservación. Sin baja, gana la decisión más reciente;
+    -- a igual fecha gana el consentimiento y, dentro, acepta = false.
+    case
+      when exists (select 1 from ga.consentimientos b where lower(b.email) = g.email and b.origen = 'baja') then
+        exists (select 1 from ga.consentimientos c
+                where lower(c.email) = g.email and c.origen = 'panel' and c.acepta
+                  and c.creado_en > (select max(b.creado_en) from ga.consentimientos b
+                                     where lower(b.email) = g.email and b.origen = 'baja'))
+      else coalesce((select d.acepta from (
         select c.acepta, c.creado_en, 0 as fuente from ga.consentimientos c where lower(c.email) = g.email
         union all
         select r2.acepta_promos, r2.created_at, 1 from ga.reservaciones r2 where lower(r2.email) = g.email
-      ) d order by d.creado_en desc, d.fuente asc, d.acepta asc limit 1), false) as acepta_promos,
+      ) d order by d.creado_en desc, d.fuente asc, d.acepta asc limit 1), false)
+    end as acepta_promos,
     g.primera_reserva, g.ultima_reserva, g.ultimo_viaje, g.tours
  from (
    select lower(r.email) as email,
@@ -328,6 +340,7 @@ alter table ga.promociones
 alter table ga.reservaciones
     drop constraint reservaciones_client_ref_check,
     drop constraint reservaciones_client_ref_key,
+    drop column cuerpo_hash,
     drop column client_ref;
 drop index ga.reservaciones_email_idx;
 

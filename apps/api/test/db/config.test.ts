@@ -36,6 +36,8 @@ describe('BD: configuracion e historial', () => {
     ['horas_vencimiento_pendiente', '0'],
     ['horas_vencimiento_pendiente', '169'],
     ['horas_corte_defecto', '169'],
+    ['pct_max_cupo_pendiente_web', '9'],
+    ['pct_max_cupo_pendiente_web', '101'],
     [CLAVE, '1.5'],
     [CLAVE, '5.0'],
     [CLAVE, '"10"'],
@@ -61,6 +63,13 @@ describe('BD: configuracion e historial', () => {
     await poner(CLAVE, '30');
     await poner('horas_corte_defecto', '12'); // sin cambio de valor
     expect(await valor(CLAVE)).toBe(30);
+  });
+
+  it('pct_max_cupo_pendiente_web existe con 60 por omisión, pendiente de confirmar', async () => {
+    const r = await env.app.query(`select valor, pendiente_confirmar from ga.configuracion where clave = 'pct_max_cupo_pendiente_web'`);
+    expect(r.rows).toHaveLength(1);
+    expect([60, 100]).toContain(r.rows[0].valor); // 100 solo mientras corre reservas.test.ts
+    expect(r.rows[0].pendiente_confirmar).toBe(true);
   });
 
   it('claves no permitidas se rechazan (insert como dueño) y ga_app no cambia clave ni inserta', async () => {

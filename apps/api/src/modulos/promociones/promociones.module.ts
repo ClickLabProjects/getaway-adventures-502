@@ -3,5 +3,5 @@ import { PromocionesController } from './promociones.controller';
 import { PromocionesRepo } from './promociones.repo';
 import { PromocionesService } from './promociones.service';
 
-@Module({ controllers: [PromocionesController], providers: [PromocionesService, PromocionesRepo] })
+@Module({ controllers: [PromocionesController], providers: [PromocionesService, PromocionesRepo], exports: [PromocionesRepo] })
 export class PromocionesModule {}

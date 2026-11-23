@@ -93,12 +93,53 @@ describe('BD: promociones, vista clientes y permisos', () => {
       expect(await acepta(email)).toBe(false);
     });
 
-    it('consentimiento más viejo que la reserva pierde', async () => {
+    it('sin baja, un consentimiento más viejo que la reserva pierde', async () => {
+      const { salidaId } = await env.escenario();
+      const email = env.email();
+      await consent(email, true, '2029-01-01T00:00:00Z');
+      await env.reservar(salidaId, 1, 'confirmada', { email, acepta_promos: false, created_at: '2030-01-01T00:00:00Z' });
+      expect(await acepta(email)).toBe(false);
+    });
+
+    it('una baja anterior NO la anula una reserva posterior con acepta_promos = true', async () => {
       const { salidaId } = await env.escenario();
       const email = env.email();
       await consent(email, false, '2029-01-01T00:00:00Z');
       await env.reservar(salidaId, 1, 'confirmada', { email, acepta_promos: true, created_at: '2030-01-01T00:00:00Z' });
+      expect(await acepta(email)).toBe(false);
+    });
+
+    it('una baja tampoco la anula un consentimiento posterior de origen reserva', async () => {
+      const { salidaId } = await env.escenario();
+      const email = env.email();
+      await consent(email, false, '2029-01-01T00:00:00Z');
+      const id = await env.reservar(salidaId, 1, 'confirmada', { email, acepta_promos: true, created_at: '2030-01-01T00:00:00Z' });
+      await env.app.query(
+        `insert into ga.consentimientos (email, acepta, origen, creado_en, reservacion_id) values ($1, true, 'reserva', '2030-01-01T00:00:00Z', $2)`,
+        [email.toLowerCase(), id],
+      );
+      expect(await acepta(email)).toBe(false);
+    });
+
+    it('una baja la anula un consentimiento POSTERIOR de origen panel; una baja posterior vuelve a anular', async () => {
+      const { salidaId } = await env.escenario();
+      const email = env.email();
+      await env.reservar(salidaId, 1, 'confirmada', { email, acepta_promos: true, created_at: '2029-01-01T00:00:00Z' });
+      await consent(email, false, '2030-01-01T00:00:00Z');
+      expect(await acepta(email)).toBe(false);
+      await consent(email, true, '2030-02-01T00:00:00Z'); // panel, posterior
       expect(await acepta(email)).toBe(true);
+      await consent(email, false, '2030-03-01T00:00:00Z'); // nueva baja
+      expect(await acepta(email)).toBe(false);
+    });
+
+    it('un consentimiento panel ANTERIOR a la baja no la anula', async () => {
+      const email = env.email();
+      const { salidaId } = await env.escenario();
+      await env.reservar(salidaId, 1, 'confirmada', { email, acepta_promos: false, created_at: '2029-01-01T00:00:00Z' });
+      await consent(email, true, '2030-01-01T00:00:00Z');
+      await consent(email, false, '2030-02-01T00:00:00Z');
+      expect(await acepta(email)).toBe(false);
     });
 
     it('gana el más reciente entre varios consentimientos y reservas', async () => {
@@ -106,7 +147,6 @@ describe('BD: promociones, vista clientes y permisos', () => {
       const email = env.email();
       await env.reservar(salidaId, 1, 'confirmada', { email, acepta_promos: false, created_at: '2030-01-01T00:00:00Z' });
       await consent(email, true, '2030-02-01T00:00:00Z');
-      await consent(email, false, '2030-03-01T00:00:00Z');
       await env.reservar(salidaId, 1, 'confirmada', { email, acepta_promos: true, created_at: '2030-04-01T00:00:00Z' });
       expect(await acepta(email)).toBe(true);
       await consent(email, false, '2030-05-01T00:00:00Z');

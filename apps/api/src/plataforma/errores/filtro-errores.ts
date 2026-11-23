@@ -47,7 +47,7 @@ export class FiltroErrores implements ExceptionFilter {
     let problema: Problema;
 
     if (excepcion instanceof ErrorNegocio) {
-      problema = construirProblema(excepcion.status, excepcion.code, excepcion.detail);
+      problema = { ...construirProblema(excepcion.status, excepcion.code, excepcion.detail), ...excepcion.extensiones };
     } else if (excepcion instanceof ZodError) {
       problema = construirProblema(400, 'GA_VALIDACION', 'Los datos enviados no son válidos.');
     } else if (excepcion instanceof HttpException) {

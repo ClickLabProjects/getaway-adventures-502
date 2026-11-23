@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { sql, type ExpressionBuilder } from 'kysely';
+import { sql, type ExpressionBuilder, type Kysely } from 'kysely';
 import { DbService } from '../../plataforma/db/db.service';
 import type { BaseDatos } from '../../plataforma/db/tipos';
 import type { PromocionDto, PromoValidaDto } from './promociones.dto';
@@ -38,16 +38,20 @@ export class PromocionesRepo {
   }
 
   /** Promoción vigente con ese código (ya normalizado) que aplica al tour activo `tourSlug`. */
-  async validar(codigo: string, tourSlug: string): Promise<Omit<PromoValidaDto, 'valida'> | null> {
-    const f = await this.db.kysely
+  async validar(
+    codigo: string,
+    tourSlug: string,
+    ejecutor: Kysely<BaseDatos> = this.db.kysely,
+  ): Promise<(Omit<PromoValidaDto, 'valida'> & { id: string }) | null> {
+    const f = await ejecutor
       .selectFrom('promociones as p')
       .innerJoin('tours as t', (j) => j.on('t.slug', '=', tourSlug).on('t.activo', '=', true))
-      .select(['p.titulo', 'p.titulo_en', 'p.descuento_pct'])
+      .select(['p.id', 'p.titulo', 'p.titulo_en', 'p.descuento_pct'])
       .where('p.codigo', '=', codigo)
       .where(vigente)
       .where((eb) => eb.or([eb('p.aplica_todos', '=', true), eb('p.tour_id', '=', eb.ref('t.id'))]))
       .limit(1)
       .executeTakeFirst();
-    return f ? { titulo: f.titulo, titulo_en: f.titulo_en, descuento_pct: Number(f.descuento_pct) } : null;
+    return f ? { id: f.id, titulo: f.titulo, titulo_en: f.titulo_en, descuento_pct: Number(f.descuento_pct) } : null;
   }
 }

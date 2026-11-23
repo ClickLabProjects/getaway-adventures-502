@@ -6,6 +6,8 @@ export class ErrorNegocio extends Error {
     readonly code: CodigoError,
     readonly status: number,
     readonly detail: string,
+    /** Campos extra seguros para el cliente (p. ej. `disponibles`), añadidos al problem+json. */
+    readonly extensiones?: Record<string, unknown>,
   ) {
     super(detail);
     this.name = 'ErrorNegocio';
