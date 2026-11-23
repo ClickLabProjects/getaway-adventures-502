@@ -6,7 +6,7 @@ Las preguntas para la agencia están redactadas para ella en `cuestionario-clien
 **Cambios desde la ronda 1:** las preguntas al arquitecto P-A1..A9 quedaron resueltas (ver al final y D-20..D-37).
 P-13 cambia: los respaldos ya están resueltos con la base administrada de Lightsail. P-4, P-5 y P-6 dejan de bloquear
 el desarrollo porque los valores son parametrizables (D-28), pero la agencia debe confirmarlos antes del lanzamiento.
-Se agregan P-17 a la agencia, P-18 a P-24 y P-A10, P-A11.
+Se agregan P-17 a la agencia, P-18 a P-24 y P-A10, P-A11. Ronda 1c (2026-11-24): se agregan P-25 a P-28 para la agencia.
 
 ## Las 5 más urgentes (bloquean la Fase 1)
 1. **P-1 · Política de cancelación** (agencia): sin ella no se puede mostrar en la reserva ni en el comprobante.
@@ -118,6 +118,26 @@ Se agregan P-17 a la agencia, P-18 a P-24 y P-A10, P-A11.
 - Por qué importa: las promociones sin tour quedaron pausadas en la base nueva (D-29); hay que saber cuáles valen para todos los tours. Además, ¿se permiten descuentos del 100 % (cortesías)?
 - Bloquea: carga inicial de promociones; H-PRO-5.
 - Recomendación: la agencia lista las promociones vigentes con su tour o "todos"; 100 % solo con confirmación explícita.
+
+**P-25 · Descuento máximo de un código público** (nueva, ronda 1c)
+- Por qué importa: hoy el sistema acepta hasta 100 %; un código público del 100 % dejaría reservar gratis a cualquiera que lo vea en la portada.
+- Bloquea: H-PRO-5, R19b, R19c.
+- Recomendación: máximo 50 % para códigos públicos; descuentos mayores solo como cortesía que registra el personal desde el panel.
+
+**P-26 · Vigencia de una promoción: ¿día de la reserva o día del viaje?** (nueva, ronda 1c)
+- Por qué importa: promo válida hasta el 30 de noviembre; alguien reserva el 29 para viajar el 15 de diciembre. ¿Aplica?
+- Bloquea: R16, H-PRO-3.
+- Recomendación: cuenta el día en que se reserva (así funciona hoy).
+
+**P-27 · Porcentaje del cupo que pueden apartar las reservas sin confirmar** (nueva, ronda 1c)
+- Por qué importa: evita que reservas falsas llenen un tour. Efecto real: en el Offroad 4x4 (cupo 8), con 60 % caben como máximo 4 personas sin confirmar; un grupo de 5 tendría que confirmar por WhatsApp.
+- Bloquea: solo confirmar el valor (ya implementado y configurable, D-39; rango 10-100).
+- Recomendación: 60 % del cupo de cada salida.
+
+**P-28 · Volver a suscribir a quien se dio de baja** (nueva, ronda 1c)
+- Por qué importa: si un cliente pidió no recibir promociones, marcar la casilla en una reserva nueva no lo vuelve a suscribir; solo el personal desde el panel, cuando el cliente lo pida. Ya implementado así (D-38); la agencia solo lo confirma.
+- Bloquea: nada (confirmación).
+- Recomendación: sí.
 
 ## Para el dueño del proyecto
 

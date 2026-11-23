@@ -16,6 +16,8 @@ decidido pero el número lo debe confirmar la agencia; se cambia sin programar (
 | Máximo de pendientes a la vez por correo o teléfono | 2 | R10 | P-4 |
 | Horas de corte por defecto (si el tour no tiene las suyas) | 12 | R2 | P-6 |
 | Por tour: hora de salida y horas de corte | sin definir | R2 | P-6 |
+| % máximo del cupo de una salida retenido por reservas sin confirmar del sitio (rango 10-100) | 60 | R10b | P-27 |
+| % máximo de descuento de un código público `[PROPUESTA]` | 50 | R19c | P-25 |
 
 Cada cambio de un valor queda registrado con quién y cuándo. En Fase 1 los cambia una persona del equipo técnico a
 pedido de la agencia; en Fase 2, el dueño desde el panel (H-OPE-9).
@@ -35,8 +37,9 @@ pedido de la agencia; en Fase 2, el dueño desde el panel (H-OPE-9).
 - **R7.** Reactivar una reserva cancelada o vencida, cambiarla de fecha o aumentar personas solo se permite si hay cupo. Confirmar o marcar pagada una reserva que ya ocupaba lugar nunca se bloquea por cupo. `[DECIDIDO]` (en base, D-24)
 - **R8.** El cupo de una salida no puede bajar por debajo de las personas ya reservadas. `[DECIDIDO]` (en base, D-24)
 - **R9.** Máximo de personas por reserva en línea: **10**. Grupos mayores se atienden por WhatsApp. Las reservas del panel no tienen este tope (la base acepta hasta 30 por reserva). `[DECIDIDO]` mecanismo · valor por confirmar (P-4)
-- **R10.** Máximo **2 reservas pendientes vigentes a la vez** por el mismo correo o teléfono. `[DECIDIDO]` mecanismo · valor y alcance por confirmar (P-4: ¿en total o por salida?)
+- **R10.** Máximo **2 reservas pendientes vigentes a la vez** por el mismo correo o teléfono **en la misma salida** (así está implementado en la API). `[DECIDIDO]` mecanismo · valor por confirmar (P-4)
 - **R11.** El formulario público exige la verificación anti-robots invisible de Turnstile. `[DECIDIDO]` (D-20)
+- **R10b.** Las reservas sin confirmar hechas en el sitio, sumadas, no pueden retener más del **60 %** del cupo de cada salida (ejemplo: Offroad 4x4, cupo 8 → máximo 4 personas sin confirmar; Acatenango, cupo 20 → 12). Si se supera, el sitio rechaza la reserva e invita a contactar a la agencia. `[DECIDIDO]` mecanismo (implementado en base y API, D-39) · valor por confirmar (P-27)
 - **R11b.** En los tours ATV el cupo puede contarse en cuatrimotos o en personas, según defina cada tour. `[DECIDIDO]` mecanismo (D-34) · cuál aplica por confirmar (P-3)
 
 ## 3. Precios y descuentos
@@ -44,11 +47,12 @@ pedido de la agencia; en Fase 2, el dueño desde el panel (H-OPE-9).
 - **R13.** El total lo calcula el servidor: subtotal = suma de (precio de cada tarifa × cantidad); descuento = subtotal × % de la promo, redondeado a centavos; total = subtotal − descuento. `[ACTUAL]` (tarifa única) · varias tarifas `[DECIDIDO]` (D-34)
 - **R14.** Tours ATV (Pacaya ATV, Pueblos en ATV): el precio publicado es por **conductor** (una cuatrimoto); el acompañante paga su propia tarifa. Propuesta: Pueblos ATV acompañante = Q300 (50 % del texto actual); Pacaya ATV = lo que defina la agencia. `[PROPUESTA]` (P-3)
 - **R15.** Una sola promoción por reserva. `[ACTUAL]`
-- **R16.** Una promo es válida si está activa, dentro de su vigencia (hora de Guatemala), con descuento > 0 y es para ese tour o está marcada "para todos los tours". `[ACTUAL]` · alcance explícito `[DECIDIDO]` (en base, D-29)
+- **R16.** Una promo es válida si está activa, dentro de su vigencia (hora de Guatemala; se mide por el **día en que se reserva**, no el del viaje: `[ACTUAL]`, confirmar con P-26), con descuento > 0 y es para ese tour o está marcada "para todos los tours". `[ACTUAL]` · alcance explícito `[DECIDIDO]` (en base, D-29)
 - **R17.** Si el turista escribió un código, se valida antes de crear la reserva; si no es válido, la reserva no se crea con precio completo sin avisarle. `[PROPUESTA]`
 - **R18.** Si se borra un tour, sus promociones se desactivan (no pasan a valer para todos). `[DECIDIDO]` (en base, D-29)
 - **R19.** El precio de una reserva queda fijo al crearla. `[ACTUAL]`
 - **R19b.** Descuento de 100 % (cortesía): solo con confirmación explícita en el panel. `[PROPUESTA]` (P-24)
+- **R19c.** Un código que se publica en la portada no puede pasar de **50 %**; descuentos mayores solo como cortesía registrada por el personal desde el panel. Hoy se permite hasta 100 % `[ACTUAL]`. `[PROPUESTA]` (P-25)
 
 ## 4. Estados de una reserva
 Estados: `pendiente`, `confirmada`, `pagada`, `cancelada` `[ACTUAL]` y `vencida` `[DECIDIDO]` (en base, D-23).
@@ -89,7 +93,8 @@ pendiente ──(personal confirma)──► confirmada ──(pago total regist
 ## 7. Datos personales y consentimiento
 - **R35.** Para reservar se piden solo nombre, correo, teléfono/WhatsApp, personas y notas opcionales. `[ACTUAL]`
 - **R36.** El turista acepta el aviso de privacidad y la política de cancelación al reservar (casilla obligatoria con enlaces). `[PROPUESTA]`
-- **R37.** El consentimiento de marketing es opcional, desmarcado por defecto `[ACTUAL]`, y vale la **decisión más reciente** del cliente (reserva, baja o cambio desde el panel). `[DECIDIDO]` (en base, D-30)
+- **R37.** El consentimiento de marketing es opcional, desmarcado por defecto `[ACTUAL]`, y vale la **decisión más reciente** del cliente (reserva, baja o cambio desde el panel), con la excepción de R37b. `[DECIDIDO]` (en base, D-30, D-38)
+- **R37b.** Excepción a R37: si el cliente se dio de baja, marcar la casilla en una reserva nueva **no** lo vuelve a suscribir; solo un consentimiento posterior registrado por el personal desde el panel (cuando el cliente lo pida) revierte la baja. `[DECIDIDO]` (implementado en base, D-38) · la agencia solo lo confirma (P-28)
 - **R38.** Cada mensaje de marketing incluye forma de darse de baja; la baja se aplica en todos los canales. `[PROPUESTA]`
 - **R39.** El cliente puede pedir que se borren sus datos: se anonimizan sus reservas (se conservan montos y fechas). `[PROPUESTA]` (P-10)
 - **R40.** Solo el personal del panel ve datos de clientes; exportar la base es solo para admin y dueño. Los datos personales nunca se guardan en los registros técnicos del servidor. `[ACTUAL]` / `[PROPUESTA]` (permisos por rol, P-17)

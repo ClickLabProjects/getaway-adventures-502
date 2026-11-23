@@ -39,7 +39,7 @@ Respuesta: ____________________________________________
 
 **1.2 ¿Cuántas reservas sin confirmar puede tener una misma persona a la vez?**
 Por qué importa: evita que alguien aparte muchos lugares con el mismo correo o teléfono y nunca llegue.
-Si no tienen preferencia, usaremos: **2 reservas sin confirmar a la vez** por correo o teléfono (en total, no por tour). Si prefieren contarlo por cada tour y fecha, indíquenlo.
+Si no tienen preferencia, usaremos: **2 reservas sin confirmar a la vez** por correo o teléfono para un mismo tour y fecha.
 Respuesta: ____________________________________________
 <sub>ref. P-4</sub>
 
@@ -48,6 +48,15 @@ Por qué importa: si el turista nunca responde, su lugar queda bloqueado y se pi
 Si no tienen preferencia, usaremos: **24 horas** desde que se hizo la reserva.
 Respuesta: ____________________________________________
 <sub>ref. P-5</sub>
+
+**1.3b ¿Qué parte de cada tour pueden apartar las reservas que todavía no han confirmado?**
+Por qué importa: si alguien hace reservas falsas, podría llenar un tour entero sin pagar nada. Para evitarlo, el sitio
+no deja que las reservas sin confirmar ocupen más de una parte del cupo de cada salida.
+Ejemplo real: con 60 %, en el **Offroad Acatenango 4x4** (cupo de 8) caben como máximo **4 personas** en reservas sin
+confirmar; un grupo de 5 tendría que confirmar con ustedes por WhatsApp. En **Acatenango Overnight** (cupo de 20) caben 12.
+Si no tienen preferencia, usaremos: **60 % del cupo** de cada salida. ¿Les parece bien, o prefieren otro porcentaje?
+Respuesta: ____________________________________________
+<sub>ref. P-27</sub>
 
 **1.4 Para ustedes, ¿qué significa que una reserva está "confirmada"?**
 Por qué importa: el sistema muestra estados (sin confirmar, confirmada, pagada, cancelada, vencida) y el equipo debe usarlos igual.
@@ -218,6 +227,21 @@ Si no tienen preferencia, usaremos: dejar en pausa las que no tengan tour hasta 
 Respuesta: ____________________________________________
 <sub>ref. P-24</sub>
 
+**6.2 ¿Cuál es el descuento más alto que puede tener un código que se publica en la portada?**
+Por qué importa: hoy el sistema permite códigos de hasta 100 %. Un código del 100 % publicado en la portada dejaría a
+cualquier persona reservar gratis.
+Si no tienen preferencia, usaremos: **máximo 50 %** para códigos públicos; descuentos mayores (por ejemplo, una
+cortesía) solo los registra el personal desde el panel para un cliente concreto.
+Respuesta: ____________________________________________
+<sub>ref. P-25</sub>
+
+**6.3 La fecha de una promoción, ¿cuenta el día en que el turista reserva o el día en que viaja?**
+Por qué importa: ejemplo, una promoción válida hasta el 30 de noviembre; alguien reserva el 29 de noviembre para
+viajar el 15 de diciembre. ¿Le damos el descuento?
+Si no tienen preferencia, usaremos: **cuenta el día en que se reserva** (en el ejemplo, sí tiene descuento). Así funciona hoy.
+Respuesta: ____________________________________________
+<sub>ref. P-26</sub>
+
 ---
 
 ## 7. Privacidad y datos de clientes
@@ -231,6 +255,13 @@ Por qué importa: los turistas de Estados Unidos y Europa esperan un aviso de pr
 Si no tienen preferencia, usaremos: conservar las reservas 5 años; borrar los datos de promociones de quien no reserva en 3 años; sí pedir la confirmación por correo.
 Respuesta: ____________________________________________
 <sub>ref. P-10</sub>
+
+**7.2 Si un cliente pidió no recibir más promociones, ¿puede volver a suscribirse solo con marcar la casilla en otra reserva?**
+Por qué importa: queremos respetar a quien pidió que no le escribieran. Con nuestra propuesta, aunque marque la casilla
+en una reserva nueva, el sistema no lo vuelve a suscribir; solo el personal puede hacerlo desde el panel cuando el cliente lo pida.
+Si no tienen preferencia, usaremos: **sí, así** (solo el personal lo vuelve a suscribir, a pedido del cliente).
+Respuesta: ____________________________________________
+<sub>ref. P-28</sub>
 
 ---
 

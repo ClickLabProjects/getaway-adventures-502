@@ -22,7 +22,7 @@ Como cliente quiero darme de baja del marketing con un clic.
 Criterios de aceptación:
 - Dado un correo de marketing, cuando hago clic en "darme de baja", entonces quedo sin consentimiento sin tener que iniciar sesión y veo una página de confirmación en mi idioma.
 - Dado que respondo "STOP"/"baja" por WhatsApp, cuando el personal lo ve, entonces puede marcarme sin consentimiento desde el panel en un clic.
-- Dado que me di de baja, cuando vuelvo a reservar y marco la casilla, entonces el consentimiento vuelve a ser sí.
+- Dado que me di de baja, cuando vuelvo a reservar y marco la casilla, entonces sigo dado de baja; solo el personal puede volver a suscribirme desde el panel si yo lo pido (R37b). [DECIDIDO] (en base, D-38; la agencia confirma con P-28)
 - Dado cualquier baja, cuando se registra, entonces queda en el historial de consentimientos con fecha y origen (baja o panel) y no se borra.
 Fase: 1 · Prioridad: debe · Estado: [DECIDIDO] (historial, D-30) / [PROPUESTA] (enlace y botón)
 
