@@ -31,6 +31,8 @@ export interface TourTabla {
   punto_salida_en: string | null;
   horario_en: string | null;
   incluye_en: Generated<string[]>;
+  hora_salida: string | null;
+  horas_corte: number | null;
 }
 
 export interface SalidaTabla {
@@ -57,9 +59,10 @@ export interface PromocionTabla {
   created_at: Marca;
   titulo_en: string | null;
   descripcion_en: string | null;
+  aplica_todos: Generated<boolean>;
 }
 
-export type EstadoReservacion = 'pendiente' | 'confirmada' | 'pagada' | 'cancelada';
+export type EstadoReservacion = 'pendiente' | 'confirmada' | 'pagada' | 'cancelada' | 'vencida';
 
 export interface ReservacionTabla {
   id: Generated<string>;
@@ -77,6 +80,8 @@ export interface ReservacionTabla {
   descuento_q: ColumnType<string, string | number | undefined, string | number>;
   promo_id: string | null;
   acepta_promos: Generated<boolean>;
+  expira_at: ColumnType<Date | null, Date | string | null | undefined, Date | string | null>;
+  client_ref: string | null;
 }
 
 export type RolPanel = 'dueno' | 'admin' | 'personal' | 'guia';
@@ -87,6 +92,33 @@ export interface UsuarioPanelTabla {
   rol: RolPanel;
   activo: Generated<boolean>;
   creado_en: Marca;
+}
+
+export interface ConfiguracionTabla {
+  clave: string;
+  valor: ColumnType<unknown, string, string>; // jsonb (se escribe como JSON en texto)
+  pendiente_confirmar: Generated<boolean>;
+  descripcion: string;
+  actualizado_en: Marca;
+}
+
+export interface ConsentimientoTabla {
+  id: Generated<string>;
+  email: string;
+  acepta: boolean;
+  origen: 'reserva' | 'baja' | 'panel';
+  creado_en: Marca;
+  version_aviso: string | null;
+  reservacion_id: string | null;
+}
+
+export interface ConfiguracionHistorialTabla {
+  id: Generated<string>;
+  clave: string;
+  valor_anterior: unknown;
+  valor_nuevo: unknown;
+  cambiado_en: Marca;
+  cambiado_por: string | null;
 }
 
 /** Vista de solo lectura. */
@@ -112,5 +144,8 @@ export interface BaseDatos {
   promociones: PromocionTabla;
   reservaciones: ReservacionTabla;
   usuarios_panel: UsuarioPanelTabla;
+  configuracion: ConfiguracionTabla;
+  configuracion_historial: ConfiguracionHistorialTabla;
+  consentimientos: ConsentimientoTabla;
   clientes: ClienteVista;
 }

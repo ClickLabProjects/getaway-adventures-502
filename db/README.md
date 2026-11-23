@@ -52,3 +52,44 @@ esquema `ga` (lo crea `roles.sql`) para no perder los permisos por omisión.
 | Nombres de constraints/índices `ga_<tabla>_...` | `<tabla>_...` (p. ej. `reservaciones_estado_check`) | Se quita el prefijo; la lógica es idéntica |
 | Políticas de Storage `ga-media` | No existen | Imágenes irán a S3 |
 | Bugs conocidos (FK `promociones.tour_id` en `set null`, cupo, fechas con `current_date`, consentimiento) | Se conservan | Se corrigen en otra migración |
+
+## Valores pendientes de confirmar por el comercio
+La tabla `ga.configuracion` guarda valores de negocio que el comercio aún no confirma (`pendiente_confirmar = true`).
+Se leen con `ga.config_int('<clave>')`. La API (`ga_app`) solo puede actualizar las columnas `valor` y `pendiente_confirmar`
+(no crear, borrar ni renombrar claves). Cada cambio queda en `ga.configuracion_historial`; la API fija quién lo hizo con
+`set local ga.actor = '<id>'` dentro de la transacción. El valor es siempre un entero JSON dentro del rango de su clave.
+
+| Clave | Valor inicial | Rango | Qué controla |
+|---|---|---|---|
+| `horas_vencimiento_pendiente` | 24 | 1-168 | Horas que una reservación pendiente retiene cupo antes de vencer |
+| `max_personas_reserva_web` | 10 | 1-30 | Máximo de personas por reservación web |
+| `max_pendientes_por_contacto` | 2 | 1-20 | Máximo de pendientes vigentes por contacto |
+| `horas_corte_defecto` | 12 | 0-168 | Horas antes de la salida en que cierra la reserva (cada tour puede fijar `horas_corte`) |
+
+Cambiar un valor (al confirmarlo se marca como confirmado):
+```
+update ga.configuracion set valor = '48', pendiente_confirmar = false
+where clave = 'horas_vencimiento_pendiente';
+```
+
+## Promociones huérfanas (migración de correcciones de negocio)
+La migración NO deduce el alcance de las promociones existentes: todas quedan con `aplica_todos = false` y las que no
+tenían tour (`tour_id is null`) se desactivan, porque eran huérfanas del bug de borrado de tours. El dueño debe revisar
+`select codigo, titulo, activo from ga.promociones where not activo and tour_id is null;` y reactivar a mano las que de
+verdad son globales: `update ga.promociones set aplica_todos = true, activo = true where codigo = '<CODIGO>';`.
+Una promo activa debe tener tour o `aplica_todos` (lo exige un CHECK). Al borrar un tour, sus promos quedan inactivas.
+
+## Reglas de concurrencia y plazos (para la API)
+- La API opera en READ COMMITTED. El trigger de cupo rechaza otro nivel de aislamiento.
+- Debe reintentar ante `40P01` (deadlock) y `40001`. Para evitar deadlocks, bloquea primero las salidas (ordenadas por id)
+  y luego las reservaciones.
+- Códigos que lanzan los triggers: `GA001` `GA_CUPO_INSUFICIENTE` (detail JSON con `disponibles`), `GA002`
+  `GA_CUPO_MENOR_A_OCUPADO`, `GA003` `GA_SALIDA_CERRADA`, `GA004` `GA_FUERA_DE_PLAZO`.
+- Al INSERTAR una reservación que ocupa lugar, la base rechaza salidas inactivas y reservas pasado el cierre
+  (`ga.cierre_reserva`). Solo para el personal del panel, la API puede saltarse el plazo (no la salida inactiva) con
+  `set local ga.permitir_fuera_de_plazo = 'on'` dentro de la transacción.
+- Confirmar o pagar una reservación en una salida ya sobrevendida está permitido: solo se revalida cuando sube la ocupación.
+
+## Revertir la migración de correcciones de negocio
+`db:local:rollback` de `20261124120000_correcciones_negocio` falla con `down destructivo: respaldar antes` si hay filas en
+`consentimientos`, `configuracion_historial` o reservaciones `vencida`. No se revierte en producción sin respaldo.

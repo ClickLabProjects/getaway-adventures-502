@@ -7,6 +7,10 @@ export const CODIGOS_ERROR = [
   'GA_PETICION_INVALIDA',
   'GA_VALIDACION',
   'GA_SERVICIO_NO_DISPONIBLE',
+  'GA_CUPO_INSUFICIENTE',
+  'GA_CUPO_MENOR_A_OCUPADO',
+  'GA_SALIDA_CERRADA',
+  'GA_FUERA_DE_PLAZO',
 ] as const;
 
 export type CodigoError = (typeof CODIGOS_ERROR)[number];

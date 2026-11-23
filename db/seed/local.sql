@@ -74,7 +74,13 @@ where t.activo
 on conflict (tour_id, fecha) do nothing;
 
 -- Promoción de ejemplo (código ficticio)
-insert into ga.promociones (titulo, descripcion, codigo, descuento_pct, titulo_en, descripcion_en)
+insert into ga.promociones (titulo, descripcion, codigo, descuento_pct, titulo_en, descripcion_en, aplica_todos)
 values ('Promo de ejemplo 10%', 'Descuento de prueba para desarrollo.', 'EJEMPLO10', 10,
-        'Sample 10% promo', 'Test discount for development.')
+        'Sample 10% promo', 'Test discount for development.', true)
 on conflict (codigo) do nothing;
+
+-- Hora de salida de ejemplo (solo donde aún no hay una; no pisa cambios)
+update ga.tours t set hora_salida = v.h::time
+from (values ('acatenango','08:00'), ('acatenango-4x4','13:00'), ('atitlan','05:30'), ('pacaya-atv','07:00'),
+             ('pueblos-atv','10:00'), ('rapel-cascada','07:00'), ('semuc-champey','08:00')) as v(slug, h)
+where t.slug = v.slug and t.hora_salida is null;

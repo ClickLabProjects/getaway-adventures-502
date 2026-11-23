@@ -12,6 +12,7 @@
     "api:dev": "npm run dev -w @ga/api",
     "api:build": "npm run build -w @ga/api",
     "api:test": "npm run test -w @ga/api",
+    "api:test:db": "npm run test -w @ga/api -- test/db",
     "api:openapi": "npm run openapi:generar -w @ga/api",
     "db:migrate": "node --env-file=.env scripts/migrate.mjs",
     "make-admin": "node --env-file=.env scripts/make-admin.mjs",
