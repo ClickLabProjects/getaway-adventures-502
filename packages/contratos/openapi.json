@@ -47,6 +47,167 @@
           "salud"
         ]
       }
+    },
+    "/api/v1/tours": {
+      "get": {
+        "operationId": "CatalogoController_tours",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TourDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/v1/tours/{slug}": {
+      "get": {
+        "operationId": "CatalogoController_tour",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/v1/tours/{slug}/salidas": {
+      "get": {
+        "operationId": "CatalogoController_salidas",
+        "parameters": [
+          {
+            "name": "slug",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "hasta",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2030-07-31"
+            }
+          },
+          {
+            "name": "desde",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "2030-06-01"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SalidaDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "catalogo"
+        ]
+      }
+    },
+    "/api/v1/promociones": {
+      "get": {
+        "operationId": "PromocionesController_vigentes",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PromocionDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "promociones"
+        ]
+      }
+    },
+    "/api/v1/promociones/validar": {
+      "post": {
+        "operationId": "PromocionesController_validar",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ValidarPromoEntradaDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromoValidaDto"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "GA_PROMO_INVALIDA"
+          }
+        },
+        "tags": [
+          "promociones"
+        ]
+      }
     }
   },
   "info": {
@@ -97,6 +258,256 @@
         },
         "required": [
           "estado"
+        ]
+      },
+      "TourDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "nombre_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "destino": {
+            "type": "string"
+          },
+          "destino_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "descripcion_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "duracion": {
+            "type": "string"
+          },
+          "duracion_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "incluye": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "incluye_en": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "punto_salida": {
+            "type": "string"
+          },
+          "punto_salida_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "horario": {
+            "type": "string",
+            "nullable": true
+          },
+          "horario_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "imagen_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "galeria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "precio_q": {
+            "type": "number"
+          },
+          "lat": {
+            "type": "number",
+            "nullable": true
+          },
+          "lng": {
+            "type": "number",
+            "nullable": true
+          },
+          "hora_salida": {
+            "type": "string",
+            "nullable": true,
+            "example": "08:00",
+            "description": "HH:MM, hora de Guatemala"
+          }
+        },
+        "required": [
+          "id",
+          "slug",
+          "nombre",
+          "nombre_en",
+          "destino",
+          "destino_en",
+          "descripcion",
+          "descripcion_en",
+          "duracion",
+          "duracion_en",
+          "incluye",
+          "incluye_en",
+          "punto_salida",
+          "punto_salida_en",
+          "horario",
+          "horario_en",
+          "imagen_url",
+          "galeria",
+          "precio_q",
+          "lat",
+          "lng",
+          "hora_salida"
+        ]
+      },
+      "SalidaDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "fecha": {
+            "type": "string",
+            "example": "2030-06-15",
+            "description": "Fecha de negocio (Guatemala)"
+          },
+          "cupo": {
+            "type": "number"
+          },
+          "disponibles": {
+            "type": "number"
+          },
+          "precio_q": {
+            "type": "number",
+            "description": "Precio especial de la salida o el del tour"
+          }
+        },
+        "required": [
+          "id",
+          "fecha",
+          "cupo",
+          "disponibles",
+          "precio_q"
+        ]
+      },
+      "PromocionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "titulo_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "descripcion": {
+            "type": "string"
+          },
+          "descripcion_en": {
+            "type": "string",
+            "nullable": true
+          },
+          "imagen_url": {
+            "type": "string",
+            "nullable": true
+          },
+          "codigo": {
+            "type": "string",
+            "nullable": true
+          },
+          "descuento_pct": {
+            "type": "number"
+          },
+          "aplica_todos": {
+            "type": "boolean"
+          },
+          "tour": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "slug": {
+                "type": "string"
+              },
+              "nombre": {
+                "type": "string"
+              }
+            },
+            "description": "Tour al que aplica (null si aplica_todos)"
+          }
+        },
+        "required": [
+          "id",
+          "titulo",
+          "titulo_en",
+          "descripcion",
+          "descripcion_en",
+          "imagen_url",
+          "codigo",
+          "descuento_pct",
+          "aplica_todos",
+          "tour"
+        ]
+      },
+      "ValidarPromoEntradaDto": {
+        "type": "object",
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "example": "verano10"
+          },
+          "tour_slug": {
+            "type": "string",
+            "example": "antigua-guatemala"
+          }
+        },
+        "required": [
+          "codigo",
+          "tour_slug"
+        ]
+      },
+      "PromoValidaDto": {
+        "type": "object",
+        "properties": {
+          "valida": {
+            "type": "boolean",
+            "example": true
+          },
+          "descuento_pct": {
+            "type": "number"
+          },
+          "titulo": {
+            "type": "string"
+          },
+          "titulo_en": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "required": [
+          "valida",
+          "descuento_pct",
+          "titulo",
+          "titulo_en"
         ]
       }
     }

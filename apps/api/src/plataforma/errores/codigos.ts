@@ -11,6 +11,8 @@ export const CODIGOS_ERROR = [
   'GA_CUPO_MENOR_A_OCUPADO',
   'GA_SALIDA_CERRADA',
   'GA_FUERA_DE_PLAZO',
+  'GA_TOUR_NO_ENCONTRADO',
+  'GA_PROMO_INVALIDA',
 ] as const;
 
 export type CodigoError = (typeof CODIGOS_ERROR)[number];

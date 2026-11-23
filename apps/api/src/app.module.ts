@@ -5,8 +5,10 @@ import { DbModule } from './plataforma/db/db.module';
 import { ErroresModule } from './plataforma/errores/errores.module';
 import { RelojModule } from './plataforma/reloj/reloj.module';
 import { SaludModule } from './plataforma/salud/salud.module';
+import { CatalogoModule } from './modulos/catalogo/catalogo.module';
+import { PromocionesModule } from './modulos/promociones/promociones.module';
 
 @Module({
-  imports: [ConfigModule, DbModule, RelojModule, ErroresModule, AuthModule, SaludModule],
+  imports: [ConfigModule, DbModule, RelojModule, ErroresModule, AuthModule, SaludModule, CatalogoModule, PromocionesModule],
 })
 export class AppModule {}
