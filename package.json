@@ -3,30 +3,19 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "npm run dev -w @ga/web",
+    "build": "npm run build -w @ga/web",
+    "preview": "npm run preview -w @ga/web",
+    "typecheck": "npm run typecheck -w @ga/web",
     "db:migrate": "node --env-file=.env scripts/migrate.mjs",
     "make-admin": "node --env-file=.env scripts/make-admin.mjs",
     "db:seed": "node --env-file=.env scripts/migrate.mjs seed.sql",
     "db:admin": "node --env-file=.env scripts/migrate.mjs admin.sql",
     "db:i18n": "node --env-file=.env scripts/migrate.mjs i18n.sql"
   },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.109.0",
-    "lucide-react": "^0.460.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.6"
-  },
   "devDependencies": {
-    "@types/node": "^20.19.43",
-    "@types/react": "^18.3.31",
-    "@types/react-dom": "^18.3.7",
-    "@vitejs/plugin-react": "^4.7.0",
-    "pg": "^8.23.1",
-    "typescript": "5.6",
-    "vite": "^6.4.6"
+    "pg": "^8.23.1"
   }
 }
