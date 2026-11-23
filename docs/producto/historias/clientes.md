@@ -14,7 +14,8 @@ Como cliente quiero que, si dejé de aceptar promociones, no me escriban más.
 Criterios de aceptación:
 - Dado que en mi primera reserva acepté promociones y en la segunda no, cuando el administrador ve la base, entonces aparezco "sin consentimiento" (R37).
 - Dado que estoy "sin consentimiento", cuando el administrador filtra "solo quienes aceptan", entonces no aparezco.
-Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
+- Dado que me di de baja hoy y una reserva mía de hace un mes decía "acepto", cuando se calcula, entonces vale la baja (la más reciente).
+Fase: 1 · Prioridad: debe · Estado: [DECIDIDO] (en base, D-30)
 
 ### H-CLI-3: darse de baja
 Como cliente quiero darme de baja del marketing con un clic.
@@ -22,7 +23,8 @@ Criterios de aceptación:
 - Dado un correo de marketing, cuando hago clic en "darme de baja", entonces quedo sin consentimiento sin tener que iniciar sesión y veo una página de confirmación en mi idioma.
 - Dado que respondo "STOP"/"baja" por WhatsApp, cuando el personal lo ve, entonces puede marcarme sin consentimiento desde el panel en un clic.
 - Dado que me di de baja, cuando vuelvo a reservar y marco la casilla, entonces el consentimiento vuelve a ser sí.
-Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
+- Dado cualquier baja, cuando se registra, entonces queda en el historial de consentimientos con fecha y origen (baja o panel) y no se borra.
+Fase: 1 · Prioridad: debe · Estado: [DECIDIDO] (historial, D-30) / [PROPUESTA] (enlace y botón)
 
 ### H-CLI-4: consentimiento no falsificable
 Como agencia quiero que nadie pueda suscribir a otra persona con su correo.

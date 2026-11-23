@@ -20,8 +20,9 @@ Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
 Como visitante quiero saber qué hacen con mis datos.
 Criterios de aceptación:
 - Dado el pie de página y el formulario, cuando hago clic en "Privacidad", entonces veo una página EN/ES con: quién es responsable, qué datos se piden, para qué, cuánto tiempo se guardan, con quién se comparten (proveedores de correo, hosting) y cómo pedir el borrado o darse de baja.
-- Dado el enlace directo a la página, cuando lo abro sin pasar por la portada, entonces carga bien.
-Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
+- Dado el enlace directo a la página, cuando lo abro sin pasar por la portada, entonces carga bien (D-21).
+- Dado el aviso, cuando lo leo, entonces menciona a los proveedores que tratan datos: Amazon Web Services (servidor, correo, inicio de sesión del panel) y Cloudflare (verificación anti-robots).
+Fase: 1 · Prioridad: debe · Estado: [PROPUESTA] (texto, P-10) / [DECIDIDO] (enlace directo, D-21)
 
 ### H-POL-4: términos y condiciones
 Como agencia quiero que el turista acepte condiciones de participación (riesgos, requisitos físicos, menores, clima).

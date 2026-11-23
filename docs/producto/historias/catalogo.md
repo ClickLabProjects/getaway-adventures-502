@@ -20,7 +20,8 @@ Como visitante quiero saber si el problema es mi conexión para reintentar.
 Criterios de aceptación:
 - Dado que no hay red al abrir un tour, cuando falla la carga, entonces veo "No pudimos cargar, revisa tu conexión" con botón "Reintentar", no "Tour no encontrado" ni "No hay salidas".
 - Dado que reintento con red, cuando carga, entonces veo el tour normal.
-Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
+- Dado que comparto el enlace `/tour/acatenango` por WhatsApp, cuando se genera la vista previa, entonces muestra nombre, foto y descripción del tour, y al abrirlo carga directo (D-21).
+Fase: 1 · Prioridad: debe · Estado: [PROPUESTA] (error de red) / [DECIDIDO] (enlace directo, D-21)
 
 ### H-CAT-4: punto de encuentro y qué llevar
 Como visitante quiero saber exactamente dónde y a qué hora me recogen.
@@ -34,7 +35,7 @@ Como visitante quiero ver claramente el precio por cuatrimoto y por acompañante
 Criterios de aceptación:
 - Dado un tour ATV, cuando veo el precio, entonces dice "por conductor" y muestra el precio del acompañante (R14), en EN y ES.
 - Dado un tour no ATV, cuando veo el precio, entonces dice "por persona".
-Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
+Fase: 1 · Prioridad: debe · Estado: [DECIDIDO] (tarifas por tour, D-34) · precios [PROPUESTA] (P-3)
 
 ### H-CAT-6: administrar tours
 Como administrador quiero crear, editar, dar de baja y reactivar tours con fotos y versión en inglés.
@@ -50,14 +51,16 @@ Criterios de aceptación:
 - Dado un tour, cuando genero salidas para un rango de fechas, entonces se crean con el cupo por omisión sin duplicar las existentes.
 - Dado una salida con 6 personas reservadas, cuando intento bajar el cupo a 4, entonces se rechaza (R8).
 - Dado que cierro una salida con reservas, cuando la cierro, entonces deja de verse en el sitio y el panel me avisa cuántas reservas tiene.
-Fase: 1 · Prioridad: debe · Estado: [ACTUAL] (generar y cerrar) / [PROPUESTA] (R8 y aviso)
+Fase: 1 · Prioridad: debe · Estado: [ACTUAL] (generar y cerrar) / [DECIDIDO] (R8, en base) / [PROPUESTA] (aviso)
 
 ### H-CAT-8: hora de corte por tour
 Como administrador quiero definir hasta qué hora se puede reservar cada tour.
 Criterios de aceptación:
-- Dado Atitlán con corte "18:00 del día anterior", cuando son las 18:01 del día anterior en Guatemala, entonces esa salida ya no se ofrece.
-- Dado un tour sin corte definido, cuando se calcula, entonces usa el corte por omisión (R2).
-Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
+- Dado el editor de un tour, cuando pongo hora de salida 05:30 y 12 horas de corte, entonces el sitio deja de ofrecer cada salida a las 17:30 del día anterior (hora de Guatemala).
+- Dado un tour sin horas de corte, cuando se calcula, entonces usa el valor por defecto (12 h, configurable) (R2).
+- Dado un tour sin hora de salida, cuando lo guardo activo, entonces el panel me pide la hora (sin ella el cierre se calcula desde las 00:00).
+- Dado que pongo más de 168 horas de corte, cuando guardo, entonces se rechaza.
+Fase: 1 · Prioridad: debe · Estado: [DECIDIDO] (en base, D-26) · pantalla y datos por tour [PROPUESTA] (P-6, P-A10)
 
 ### H-CAT-9: tours privados y fechas a pedido
 Como visitante quiero pedir una fecha o un tour privado que no aparece.

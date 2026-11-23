@@ -1,6 +1,6 @@
 # Producto: Getaway Adventures 502
 
-Ronda 1 · 2026-11-23 · Autor: product-owner. Etiquetas: `[ACTUAL]` existe en el código, `[PROPUESTA]` falta
+Ronda 1b · 2026-11-24 · Autor: product-owner. Etiquetas: `[ACTUAL]` existe en el código, `[PROPUESTA]` falta
 confirmar, `[DECIDIDO]` confirmado por el cliente o el dueño del proyecto.
 
 ## Visión (5 líneas)
@@ -27,11 +27,14 @@ tiempo real y un registro único de reservas y clientes. `[ACTUAL]`
 - Venta de tours por persona (precios en quetzales, Q450 a Q1,450 por persona en el catálogo actual). `[ACTUAL]`
 - Precios especiales por fecha (salidas con precio propio) y promociones con código de descuento. `[ACTUAL]`
 - Cobro fuera del sitio: la reserva queda **pendiente** y el pago se arregla por WhatsApp, Instagram o en la
-  oficina de Antigua. `[ACTUAL]`
+  oficina de Antigua. `[ACTUAL]` · se mantiene en Fase 1 `[DECIDIDO]` (D-2)
 - Cobro de anticipo o pago total en línea para reducir los turistas que no se presentan. `[PROPUESTA]` (Fase 2, ver preguntas.)
-- Extras por tour (por ejemplo, el copiloto en ATV) y, más adelante, tours privados. `[PROPUESTA]`
+- Extras por tour (por ejemplo, el acompañante en ATV; el mecanismo de tarifas por tour está decidido, D-34, el precio no) y, más adelante, tours privados. `[PROPUESTA]`
 
 ## Estado actual en una frase
 Catálogo, reserva sin pago, panel de administración (dashboard, reservaciones, tours y salidas, promociones,
-clientes) y sitio bilingüe ya existen. Faltan las piezas que hacen confiable la venta: avisos, comprobante,
-políticas, control de abusos y gestión completa de una reserva (cambio de fecha, pagos, cancelación). Ver `fases.md`.
+clientes) y sitio bilingüe ya existen sobre Supabase, pero **esa versión no se lanza** (D-18): el producto se lleva a
+una plataforma propia (API + PostgreSQL en AWS Lightsail, login con Cognito, correos con SES; ≈ 25-30 USD/mes, D-19).
+La base nueva ya protege el cupo, usa hora de Guatemala, vence pendientes, cierra cada tour a su hora de corte y evita
+reservas duplicadas. Faltan avisos, comprobante, políticas, pagos registrados y la gestión completa de una reserva.
+Ver `fases.md`.
