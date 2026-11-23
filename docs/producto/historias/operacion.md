@@ -5,8 +5,8 @@ Como personal quiero encontrar una reserva por código, nombre, correo, teléfon
 Criterios de aceptación:
 - Dado el código GA-ABC123, cuando lo busco, entonces aparece esa reserva.
 - Dado filtros de estado y tour, cuando los combino, entonces solo veo las que cumplen ambos.
-- Dado que hay más de 1000 reservas, cuando busco una antigua o una de una salida futura, entonces la encuentro (no se recorta en silencio).
-Fase: 1 · Prioridad: debe · Estado: [ACTUAL] (búsqueda) / [PROPUESTA] (más de 1000)
+- Dado que hay más de 1000 reservas, cuando busco una antigua o una de una salida futura, entonces la encuentro (no se recorta en silencio) y la lista se recorre por páginas.
+Fase: 1 · Prioridad: debe · Estado: [ACTUAL] (búsqueda) / [DECIDIDO] (páginas en el servidor, D-22)
 
 ### H-OPE-2: lista de viajeros por salida
 Como personal quiero ver, para una salida, todos los que van con su teléfono, notas, punto de recogida y saldo.
@@ -20,6 +20,7 @@ Como personal quiero ver primero las reservas pendientes que están por vencer p
 Criterios de aceptación:
 - Dado reservas pendientes, cuando abro Reservaciones, entonces hay una vista "Por confirmar" ordenada por vencimiento, con el tiempo restante.
 - Dado una pendiente a menos de 2 h de vencer, cuando la veo, entonces está resaltada.
+- Dado una pendiente cuyo plazo ya pasó pero aún no se marcó vencida, cuando la veo, entonces aparece como vencida (no como pendiente).
 Fase: 1 · Prioridad: debería · Estado: [PROPUESTA]
 
 ### H-OPE-4: WhatsApp del cliente con un clic
@@ -55,3 +56,13 @@ Criterios de aceptación:
 - Dado que el administrador me asigna la salida del día 10, cuando entro, entonces veo esa salida y su lista; no veo otras salidas, montos totales ni la base de clientes.
 - Dado que me quitan la asignación, cuando entro, entonces ya no la veo.
 Fase: 3 · Prioridad: podría · Estado: [PROPUESTA]
+
+### H-OPE-9: cambiar los valores del negocio desde el panel
+Como dueño quiero cambiar el vencimiento de pendientes, el máximo de personas por reserva en línea, el máximo de pendientes por contacto y las horas de corte por defecto sin pedírselo al programador.
+Criterios de aceptación:
+- Dado el panel con rol dueño, cuando cambio el vencimiento de 24 a 48 h, entonces las pendientes nuevas vencen a las 48 h y las ya creadas conservan su plazo.
+- Dado un valor fuera de rango (vencimiento 0 o más de 168 h; personas más de 30; corte más de 168 h), cuando guardo, entonces se rechaza con el rango permitido.
+- Dado cualquier cambio, cuando se guarda, entonces queda en el historial con quién, cuándo, valor anterior y nuevo.
+- Dado un usuario con rol personal o guía, cuando abre la pantalla, entonces no la ve ni puede cambiar valores por la API.
+- Dado un valor que la agencia aún no ha confirmado, cuando lo veo, entonces aparece marcado "por confirmar".
+Fase: 2 (en Fase 1 lo cambia el equipo técnico a pedido) · Prioridad: debería · Estado: [DECIDIDO] (valores e historial en base, D-28) / [PROPUESTA] (pantalla)

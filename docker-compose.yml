@@ -1,0 +1,21 @@
+# Solo desarrollo local. Credenciales falsas, no usar en ningún otro lugar.
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: ga_dev
+      POSTGRES_PASSWORD: ga_dev_clave_falsa
+      POSTGRES_DB: ga_dev
+    ports:
+      # Si el 5432 está ocupado: GA_DB_PORT=5433 docker compose up -d
+      - "127.0.0.1:${GA_DB_PORT:-5432}:5432"
+    volumes:
+      - ga_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ga_dev -d ga_dev"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  ga_pgdata:

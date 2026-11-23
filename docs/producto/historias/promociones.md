@@ -36,8 +36,10 @@ Criterios de aceptación:
 - Dado una promo nueva con 15% para Atitlán del 1 al 15, cuando la guardo, entonces se ve "Vigente", "Programada" o "Vencida" según la fecha.
 - Dado que pongo 100% de descuento, cuando guardo, entonces se pide confirmación explícita.
 - Dado que pongo 0%, cuando guardo, entonces se avisa que solo sirve como anuncio y el código no dará descuento.
-- Dado que borro un tour con promociones, cuando se borra, entonces sus promociones quedan pausadas (R18).
-Fase: 1 · Prioridad: debe · Estado: [ACTUAL] (crear/editar) / [PROPUESTA] (resto)
+- Dado que borro un tour con promociones, cuando se borra, entonces sus promociones quedan pausadas (R18, en base).
+- Dado una promo nueva sin tour, cuando la guardo activa, entonces el panel me obliga a elegir un tour o marcar "para todos los tours"; sin eso no se guarda activa (en base).
+- Dado las promociones sin tour que quedaron pausadas al pasar a la base nueva, cuando la agencia confirma cuáles eran para todos (P-24), entonces se reactivan marcadas "para todos los tours".
+Fase: 1 · Prioridad: debe · Estado: [ACTUAL] (crear/editar) / [DECIDIDO] (alcance y borrado, D-29) / [PROPUESTA] (100 % y 0 %, P-24)
 
 ### H-PRO-6: promociones privadas y límite de usos
 Como administrador quiero códigos que no salgan en la portada y que se puedan usar un número limitado de veces.

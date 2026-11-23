@@ -36,8 +36,9 @@ Fase: 1 · Prioridad: debería · Estado: [PROPUESTA]
 ### H-PAG-5: corregir un pago mal registrado
 Como administrador quiero anular un pago registrado por error sin borrar la evidencia.
 Criterios de aceptación:
-- Dado un pago registrado por error, cuando lo anulo con motivo, entonces deja de sumar al saldo pero sigue visible como anulado en el historial.
-Fase: 1 · Prioridad: debería · Estado: [PROPUESTA]
+- Dado un pago registrado por error, cuando lo anulo con motivo, entonces se agrega un registro de anulación: el pago deja de sumar al saldo pero sigue visible como anulado.
+- Dado cualquier pago, cuando alguien intenta editarlo o borrarlo, entonces no se permite (ni desde el panel ni desde la API).
+Fase: 1 · Prioridad: debería · Estado: [DECIDIDO] (pagos que solo se agregan, D-33)
 
 ### H-PAG-6: pagar el anticipo en línea
 Como visitante quiero pagar el anticipo con tarjeta al reservar para asegurar mi lugar sin esperar a WhatsApp.

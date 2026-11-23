@@ -3,30 +3,32 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": ["apps/*", "packages/*"],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
+    "dev": "npm run dev -w @ga/web",
+    "build": "npm run build -w @ga/web",
+    "preview": "npm run preview -w @ga/web",
+    "typecheck": "npm run typecheck -w @ga/web && npm run typecheck -w @ga/api",
+    "api:dev": "npm run dev -w @ga/api",
+    "api:build": "npm run build -w @ga/api",
+    "api:test": "npm run test -w @ga/api",
+    "api:test:db": "npm run test -w @ga/api -- test/db",
+    "api:openapi": "npm run openapi:generar -w @ga/api",
     "db:migrate": "node --env-file=.env scripts/migrate.mjs",
     "make-admin": "node --env-file=.env scripts/make-admin.mjs",
     "db:seed": "node --env-file=.env scripts/migrate.mjs seed.sql",
     "db:admin": "node --env-file=.env scripts/migrate.mjs admin.sql",
-    "db:i18n": "node --env-file=.env scripts/migrate.mjs i18n.sql"
-  },
-  "dependencies": {
-    "@supabase/supabase-js": "^2.109.0",
-    "lucide-react": "^0.460.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.6"
+    "db:i18n": "node --env-file=.env scripts/migrate.mjs i18n.sql",
+    "db:local:up": "docker compose up -d --wait",
+    "db:local:migrate": "node scripts/db-local.mjs migrate",
+    "db:local:rollback": "node scripts/db-local.mjs rollback",
+    "db:local:status": "node scripts/db-local.mjs status",
+    "db:local:reset": "docker compose exec -T postgres psql -v ON_ERROR_STOP=1 -U ga_dev -d postgres -c \"drop database if exists ga_dev with (force)\" -c \"create database ga_dev\"",
+    "db:local:roles": "docker compose exec -T postgres psql -v ON_ERROR_STOP=1 -U ga_dev -d ga_dev -v pass_migrator=ga_migrator_local_falsa -v pass_app=ga_app_local_falsa -v pass_lectura=ga_lectura_local_falsa < db/bootstrap/roles.sql",
+    "db:local:seed": "docker compose exec -T postgres psql -v ON_ERROR_STOP=1 -U ga_dev -d ga_dev < db/seed/local.sql"
   },
   "devDependencies": {
-    "@types/node": "^20.19.43",
-    "@types/react": "^18.3.31",
-    "@types/react-dom": "^18.3.7",
-    "@vitejs/plugin-react": "^4.7.0",
-    "pg": "^8.23.1",
-    "typescript": "5.6",
-    "vite": "^6.4.6"
+    "dbmate": "^2.38.2",
+    "pg": "^8.23.1"
   }
 }

@@ -11,7 +11,7 @@ Fase: 1 · Prioridad: debe · Estado: [ACTUAL]
 Como dueño quiero que las cifras sean correctas aunque haya miles de reservas.
 Criterios de aceptación:
 - Dado 1,500 reservas, cuando veo "Todo", entonces las cifras coinciden con la suma total real (no solo las primeras 1000).
-Fase: 1 · Prioridad: debe · Estado: [PROPUESTA]
+Fase: 1 · Prioridad: debe · Estado: [DECIDIDO] (métricas en el servidor, D-22)
 
 ### H-DSH-3: "por cobrar" y "cobrado" reales
 Como dueño quiero que "por cobrar" sea solo lo que todavía se puede cobrar y que "cobrado" refleje los pagos registrados.
@@ -26,7 +26,7 @@ Como dueño quiero ver qué salidas de los próximos 14 días se están llenando
 Criterios de aceptación:
 - Dado una salida con 8 de 12 lugares, cuando la veo, entonces muestra 8/12 con barra.
 - Dado que las vencidas no cuentan, cuando una pendiente vence, entonces la ocupación baja.
-Fase: 1 · Prioridad: debe · Estado: [ACTUAL] / [PROPUESTA] (vencidas)
+Fase: 1 · Prioridad: debe · Estado: [ACTUAL] / [DECIDIDO] (vencidas no ocupan, en base, D-23)
 
 ### H-DSH-5: rendimiento de promociones
 Como dueño quiero ver cuántas reservas y cuánto descuento generó cada promoción.
