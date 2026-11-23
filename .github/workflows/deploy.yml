@@ -1,8 +1,12 @@
 name: Publicar en GitHub Pages
 
+# Un solo sitio de GitHub Pages con dos ambientes:
+#   main → producción  https://<org>.github.io/<repo>/
+#   dev  → pruebas     https://<org>.github.io/<repo>/dev/
+# Cada vez que cambia cualquiera de las dos ramas se recompilan ambas y se publica el sitio completo.
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   workflow_dispatch:
 
 permissions:
@@ -12,30 +16,59 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: prod
+      - uses: actions/checkout@v4
+        with:
+          ref: dev
+          path: dev
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
-      - name: Compilar
-        run: npm run build
+          cache-dependency-path: |
+            prod/package-lock.json
+            dev/package-lock.json
+
+      - name: Compilar producción (main)
+        working-directory: prod
+        run: npm ci && npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
+          VITE_APP_ENV: prod
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-      # Rutas como /tour/acatenango funcionan al recargar gracias a 404.html
-      - run: cp dist/index.html dist/404.html
+
+      # Si se definen VITE_SUPABASE_URL_DEV / VITE_SUPABASE_ANON_KEY_DEV, pruebas usa su propia base de datos
+      - name: Compilar pruebas (dev)
+        working-directory: dev
+        run: npm ci && npm run build
+        env:
+          BASE_PATH: /${{ github.event.repository.name }}/dev/
+          VITE_APP_ENV: dev
+          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL_DEV || vars.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY_DEV || vars.VITE_SUPABASE_ANON_KEY }}
+
+      - name: Armar el sitio
+        run: |
+          mkdir site
+          cp -r prod/dist/. site/
+          cp -r dev/dist site/dev
+          # Recargar rutas como /tour/acatenango o /dev/tour/acatenango
+          cp prod/.github/pages/404.html site/404.html
+
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build

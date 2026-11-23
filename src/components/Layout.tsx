@@ -30,6 +30,9 @@ export default function Layout() {
 
   return (
     <>
+      {import.meta.env.VITE_APP_ENV === 'dev' && (
+        <div className="env-banner" role="status">Ambiente de pruebas (dev) · Test environment</div>
+      )}
       <header className="nav">
         <div className="container nav-inner">
           <Link to="/" className="brand">

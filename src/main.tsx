@@ -8,6 +8,12 @@ import AdminApp from './pages/admin/AdminApp';
 import { LangProvider } from './lib/i18n';
 import './styles.css';
 
+// Ruta que manda .github/pages/404.html al recargar una página interna (p. ej. /tour/acatenango)
+const rutaGuardada = new URLSearchParams(window.location.search).get('p');
+if (rutaGuardada !== null) {
+  window.history.replaceState(null, '', import.meta.env.BASE_URL + rutaGuardada.replace(/^\//, '') + window.location.hash);
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <LangProvider>

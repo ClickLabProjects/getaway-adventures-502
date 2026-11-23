@@ -273,3 +273,6 @@ code { font-weight: 600; color: var(--orange-600); }
 .eyebrow-dark { color: var(--orange-600); margin: 0 0 6px; }
 .dcard-content p { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .basecamp-actions { margin: 4px 0 14px; }
+
+/* Franja visible solo en el ambiente de pruebas (rama dev) */
+.env-banner { background: #b3261e; color: #fff; text-align: center; font-size: .8rem; font-weight: 600; letter-spacing: .03em; padding: 4px 16px; }
