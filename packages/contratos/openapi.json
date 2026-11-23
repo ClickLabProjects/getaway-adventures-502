@@ -1,0 +1,104 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/yo": {
+      "get": {
+        "operationId": "YoController_yo",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/YoDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/api/v1/salud": {
+      "get": {
+        "operationId": "SaludController_salud",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SaludDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "salud"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Getaway Adventures 502 API",
+    "description": "",
+    "version": "0.1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "YoDto": {
+        "type": "object",
+        "properties": {
+          "sub": {
+            "type": "string"
+          },
+          "rol": {
+            "type": "string",
+            "enum": [
+              "dueno",
+              "admin",
+              "personal",
+              "guia"
+            ]
+          }
+        },
+        "required": [
+          "sub",
+          "rol"
+        ]
+      },
+      "SaludDto": {
+        "type": "object",
+        "properties": {
+          "estado": {
+            "type": "string",
+            "example": "ok"
+          }
+        },
+        "required": [
+          "estado"
+        ]
+      }
+    }
+  }
+}
