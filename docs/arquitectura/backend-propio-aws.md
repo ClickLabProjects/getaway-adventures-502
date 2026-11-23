@@ -2,6 +2,17 @@
 
 Propuesta del agente `arquitecto`, 2026-11-23. **Estado: pendiente de decisiones del dueño (ver al final).**
 
+> **Actualización 2026-11-23: hosting en AWS Lightsail.** El dueño pidió lo más barato posible sin salir de AWS.
+> La API corre en un **servidor Lightsail de 1 GB** con Docker y la base es la **PostgreSQL administrada de
+> Lightsail**, en lugar de ECS Fargate + ALB y RDS. Producción cuesta ≈ 25 USD/mes (ver `costos-mensuales.md`).
+> Se mantienen Cognito, SES, S3 + CloudFront, Turnstile, dbmate y el resto del diseño.
+>
+> Cambios que esto implica:
+> - Las secciones de ECS, ALB, WAF, bastión y Multi-AZ quedan como referencia para cuando el negocio crezca.
+> - Sin autoescalado: se escala a mano subiendo de plan, avisado por las alarmas de Lightsail.
+> - Sin rol IAM en el servidor: la API usa una llave de acceso limitada a SES y Cognito.
+> - Las migraciones de producción corren desde el propio servidor (no desde una tarea ECS).
+
 ## Lo que decidió el dueño
 
 - Supabase deja de ser el backend (BaaS). Habrá una **API propia** entre el navegador y la base de datos.

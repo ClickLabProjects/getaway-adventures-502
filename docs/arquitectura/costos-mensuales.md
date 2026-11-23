@@ -10,6 +10,42 @@ y sin impuestos. **Son aproximados: antes de cotizar al cliente hay que confirma
   puede quedar caído entre 30 y 60 minutos mientras AWS lo recupera o se restaura. Para este negocio es aceptable.
 - Se mantiene lo que pidió el dueño: API propia, RDS PostgreSQL en producción y Cognito.
 
+## Opción elegida: AWS Lightsail (lo más barato dentro de AWS)
+
+El dueño pidió **lo más barato posible sin salir de AWS**. Lightsail es la versión de precio fijo de AWS: la API y la
+base de datos corren ahí, y Cognito, SES, S3 y CloudFront se siguen usando como en el resto del diseño.
+
+| Componente | USD/mes |
+|---|---|
+| Servidor Lightsail de **1 GB** (2 vCPU de ráfaga, 40 GB SSD; incluye IP pública y 2 TB de tráfico) | 7 |
+| **Base de datos administrada de Lightsail**, PostgreSQL de 1 GB en una zona, con respaldos diarios automáticos (7 días) | 15 |
+| Sitio e imágenes: S3 + CloudFront (dentro del nivel gratuito) | ≈ 1 |
+| Correo SES, Cognito, Turnstile y DNS | ≈ 1 |
+| Dominio `.com` | 1 |
+| **Total** | **≈ 25** |
+| **Con colchón del 20 %** | **≈ 30/mes · ≈ 360/año** |
+
+**Alternativa aún más barata, ≈ 15 USD/mes:** un solo servidor Lightsail de 2 GB (12 USD) con PostgreSQL instalado en la
+misma máquina, más snapshots automáticos y un respaldo diario a S3. **No se recomienda** para este negocio: el equipo
+tendría que administrar la base (respaldos, restauración, actualizaciones), y si el servidor se daña y el respaldo
+falló, se pierden reservas. Se ahorran unos 10 USD al mes a cambio de ese riesgo.
+
+**Cómo se escala:** Lightsail no escala solo.
+- Las alarmas gratuitas (CPU, memoria, capacidad de ráfaga) avisan por correo antes de que el servidor se sature.
+- Para subir de plan se saca un snapshot y se crea un servidor más grande: unos 5-10 minutos sin servicio, que se
+  pueden programar de madrugada.
+- Si algún día hace falta más, el snapshot se exporta a EC2 y la base se pasa a RDS con un dump.
+
+**Diferencias con EC2 + RDS que se aceptan:**
+- La base es la administrada de Lightsail, no RDS. Es PostgreSQL con menos opciones de configuración.
+- El servidor no puede tener un rol IAM. La API usa una llave de acceso limitada a SES y Cognito, que se guarda en el
+  servidor y se rota.
+
+**Primeros meses:** Lightsail suele dar los primeros 3 meses gratis en algunos planes de servidor y de base, y las
+cuentas nuevas de AWS reciben créditos. Hay que verificar las condiciones vigentes y **no contar con eso al cotizar**.
+
+Las secciones siguientes se conservan como referencia de la opción con EC2 + RDS.
+
 ## Qué cambia frente a la propuesta original para abaratar
 
 | Se quita o cambia | Ahorro aprox./mes | Riesgo que se acepta |
@@ -61,6 +97,8 @@ Queda fuera de este cálculo. Se va a montar con servicios gratuitos y se define
 
 | Escenario | AWS | Dominio | **Total mensual** | **Total anual** | **Con colchón del 20 %** |
 |---|---|---|---|---|---|
+| **Lightsail (elegida)**: servidor 1 GB + base administrada | 24 | 1 | **≈ 25** | **≈ 300** | **≈ 30/mes · ≈ 360/año** |
+| Lightsail todo en un servidor (no recomendada) | 14 | 1 | ≈ 15 | ≈ 180 | ≈ 18/mes |
 | Mínimo (EC2 t4g.micro) | 29 | 1 | **≈ 30** | **≈ 360** | ≈ 36/mes · ≈ 430/año |
 | **Recomendado** (EC2 t4g.small) | 35 | 1 | **≈ 36** | **≈ 430** | **≈ 43/mes · ≈ 520/año** |
 | Propuesta original (Fargate + ALB + WAF, una zona) | 60-75 | 1 | ≈ 61-76 | ≈ 730-910 | ≈ 73-91/mes |
@@ -76,7 +114,7 @@ según el programa vigente). Eso reduce el costo inicial, pero **no conviene cot
 La infraestructura es solo una parte. El precio mensual debería salir de esta fórmula:
 
 ```
-Precio mensual = Infraestructura de producción con colchón (≈ 43 USD en el escenario recomendado)
+Precio mensual = Infraestructura de producción con colchón (≈ 30 USD con Lightsail)
                + Herramientas del equipo (parte proporcional de Claude, Kiro, etc.)
                + Horas de mantenimiento × tarifa por hora
                + Margen de ganancia
@@ -95,7 +133,7 @@ Precio mensual = Infraestructura de producción con colchón (≈ 43 USD en el e
 Las funcionalidades nuevas y los cambios grandes se cotizan aparte, por proyecto, y no entran en el mantenimiento.
 
 La tarifa por hora, el costo de las herramientas y el margen los define el equipo. Por ejemplo, con el escenario
-recomendado se suman 43 USD de infraestructura, más las horas por la tarifa, más la herramienta proporcional,
+de Lightsail se suman 30 USD de infraestructura, más las horas por la tarifa, más la herramienta proporcional,
 y sobre ese total se aplica el margen.
 
 ## Qué falta confirmar
