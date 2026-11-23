@@ -36,10 +36,24 @@ export function cargarConfig(env: NodeJS.ProcessEnv = process.env): Config {
     throw new Error(`Configuración inválida o incompleta. Revisa las variables: ${campos}`);
   }
   const e = r.data;
+  if (e.NODE_ENV === 'production') exigirTlsVerificado(e.DATABASE_URL);
   return {
     entorno: e.NODE_ENV,
     puerto: e.PORT,
     databaseUrl: e.DATABASE_URL,
     cognito: { userPoolId: e.COGNITO_USER_POOL_ID, clientId: e.COGNITO_CLIENT_ID, region: e.COGNITO_REGION },
   };
+}
+
+/** En producción la conexión a la base exige TLS verificado. Nunca se muestra la URL. */
+function exigirTlsVerificado(url: string): void {
+  let modo: string | null = null;
+  try {
+    modo = new URL(url).searchParams.get('sslmode');
+  } catch {
+    throw new Error('Configuración inválida. Revisa las variables: DATABASE_URL');
+  }
+  if (modo !== 'verify-full') {
+    throw new Error('Configuración inválida. DATABASE_URL en producción debe incluir sslmode=verify-full');
+  }
 }
