@@ -2,7 +2,7 @@
 
 Propuesta del agente `arquitecto`, 2026-11-23. **Estado: pendiente de decisiones del dueño (ver al final).**
 
-> **Actualización 2026-11-23: hosting en AWS Lightsail.** El dueño pidió lo más barato posible sin salir de AWS.
+> **Decisiones 2026-11-23: backend en NestJS; hosting en AWS Lightsail.** El dueño pidió lo más barato posible sin salir de AWS.
 > La API corre en un **servidor Lightsail de 1 GB** con Docker y la base es la **PostgreSQL administrada de
 > Lightsail**, en lugar de ECS Fargate + ALB y RDS. Producción cuesta ≈ 25 USD/mes (ver `costos-mensuales.md`).
 > Se mantienen Cognito, SES, S3 + CloudFront, Turnstile, dbmate y el resto del diseño.
@@ -280,7 +280,7 @@ Los pasos 4-6 y 7 pueden ir en paralelo. El 3 va antes del 6.
 
 ## Decisiones pendientes del dueño
 
-1. **Lenguaje:** NestJS (recomendado) o .NET 10.
+1. ~~**Lenguaje:**~~ **Decidido (2026-11-23): NestJS.**
 2. **Cuenta AWS:** a nombre de quién, quién la paga, si dev y prod van en cuentas separadas, y la región
    (us-east-1 o México).
 3. **RDS:** Single-AZ (unos 15 USD; si falla, 30-60 min sin servicio) o Multi-AZ (unos 30 USD).
