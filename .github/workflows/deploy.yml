@@ -1,12 +1,11 @@
-name: Publicar en GitHub Pages
+name: Publicar pruebas (dev) en GitHub Pages
 
-# Un solo sitio de GitHub Pages con dos ambientes:
-#   main → producción  https://<org>.github.io/<repo>/
-#   dev  → pruebas     https://<org>.github.io/<repo>/dev/
-# Cada vez que cambia cualquiera de las dos ramas se recompilan ambas y se publica el sitio completo.
+# GitHub Pages publica solo la rama dev (ambiente de pruebas):
+#   https://<org>.github.io/<repo>/
+# Producción (main) no se despliega aquí: se enciende a demanda en su propia infraestructura.
 on:
   push:
-    branches: [main, dev]
+    branches: [dev]
   workflow_dispatch:
 
 permissions:
@@ -16,7 +15,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
@@ -24,51 +23,26 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
-          path: prod
-      - uses: actions/checkout@v4
-        with:
           ref: dev
-          path: dev
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-          cache-dependency-path: |
-            prod/package-lock.json
-            dev/package-lock.json
-
-      - name: Compilar producción (main)
-        working-directory: prod
-        run: npm ci && npm run build
+      - run: npm ci
+      # Si se definen VITE_SUPABASE_URL_DEV / VITE_SUPABASE_ANON_KEY_DEV, pruebas usa su propia base de datos
+      - name: Compilar
+        run: npm run build
         env:
           BASE_PATH: /${{ github.event.repository.name }}/
-          VITE_APP_ENV: prod
-          VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY }}
-
-      # Si se definen VITE_SUPABASE_URL_DEV / VITE_SUPABASE_ANON_KEY_DEV, pruebas usa su propia base de datos
-      - name: Compilar pruebas (dev)
-        working-directory: dev
-        run: npm ci && npm run build
-        env:
-          BASE_PATH: /${{ github.event.repository.name }}/dev/
           VITE_APP_ENV: dev
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL_DEV || vars.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ vars.VITE_SUPABASE_ANON_KEY_DEV || vars.VITE_SUPABASE_ANON_KEY }}
-
-      - name: Armar el sitio
-        run: |
-          mkdir site
-          cp -r prod/dist/. site/
-          cp -r dev/dist site/dev
-          # Recargar rutas como /tour/acatenango o /dev/tour/acatenango
-          cp prod/.github/pages/404.html site/404.html
-
+      # Recargar rutas internas como /tour/acatenango
+      - run: cp .github/pages/404.html dist/404.html
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: dist
 
   deploy:
     needs: build
