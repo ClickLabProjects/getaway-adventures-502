@@ -46,11 +46,7 @@ unos 6 USD menos y el total queda en **≈ 28-30 USD/mes**. Tiene menos margen s
 
 ## Ambiente de pruebas (dev)
 
-| Opción | USD/mes | Nota |
-|---|---|---|
-| **Base Supabase gratis + API en un EC2 t4g.micro** | **≈ 11** | Supabase gratis se pausa tras 7 días sin uso; se reactiva desde su panel |
-| Igual, pero apagando el EC2 de noche y en fines de semana | ≈ 5-6 | Se programa con EventBridge Scheduler (gratis) |
-| Supabase Pro en lugar del gratis | +25 | No se pausa |
+Queda fuera de este cálculo. Se va a montar con servicios gratuitos y se define por separado.
 
 ## Costos que no son de AWS
 
@@ -61,16 +57,16 @@ unos 6 USD menos y el total queda en **≈ 28-30 USD/mes**. Tiene menos margen s
 | GitHub (organización, plan gratis) | Repos y Actions: ilimitado si el repo es público, 2.000 min/mes si es privado | 0 |
 | Cloudflare (Turnstile y, si se quiere, DNS) | Plan gratis | 0 |
 
-## Resumen de infraestructura
+## Resumen: solo producción
 
-| Escenario | Producción | Dev | Otros | **Total mensual** | **Total anual** |
+| Escenario | AWS | Dominio | **Total mensual** | **Total anual** | **Con colchón del 20 %** |
 |---|---|---|---|---|---|
-| Mínimo (t4g.micro, dev apagado fuera de horario) | 29 | 6 | 1 | **≈ 36** | **≈ 430** |
-| **Recomendado** (t4g.small, dev encendido) | 35 | 11 | 1 | **≈ 47** | **≈ 565** |
-| Propuesta original (Fargate + ALB + WAF, una zona) | 60-75 | 35-50 | 1 | ≈ 95-125 | ≈ 1.150-1.500 |
+| Mínimo (EC2 t4g.micro) | 29 | 1 | **≈ 30** | **≈ 360** | ≈ 36/mes · ≈ 430/año |
+| **Recomendado** (EC2 t4g.small) | 35 | 1 | **≈ 36** | **≈ 430** | **≈ 43/mes · ≈ 520/año** |
+| Propuesta original (Fargate + ALB + WAF, una zona) | 60-75 | 1 | ≈ 61-76 | ≈ 730-910 | ≈ 73-91/mes |
 
 **Colchón:** conviene cotizar con un **15-20 % extra** sobre la infraestructura para cubrir el crecimiento de datos,
-los cambios de precio y el tipo de cambio. Por ejemplo, el escenario recomendado quedaría en **≈ 55 USD/mes**.
+los cambios de precio y el tipo de cambio.
 
 **Primer año:** las cuentas nuevas de AWS reciben créditos del nivel gratuito (hasta unos 200 USD en los primeros meses,
 según el programa vigente). Eso reduce el costo inicial, pero **no conviene cotizarle al cliente contando con ellos.**
@@ -80,7 +76,7 @@ según el programa vigente). Eso reduce el costo inicial, pero **no conviene cot
 La infraestructura es solo una parte. El precio mensual debería salir de esta fórmula:
 
 ```
-Precio mensual = Infraestructura (con colchón)
+Precio mensual = Infraestructura de producción con colchón (≈ 43 USD en el escenario recomendado)
                + Herramientas del equipo (parte proporcional de Claude, Kiro, etc.)
                + Horas de mantenimiento × tarifa por hora
                + Margen de ganancia
@@ -99,7 +95,7 @@ Precio mensual = Infraestructura (con colchón)
 Las funcionalidades nuevas y los cambios grandes se cotizan aparte, por proyecto, y no entran en el mantenimiento.
 
 La tarifa por hora, el costo de las herramientas y el margen los define el equipo. Por ejemplo, con el escenario
-recomendado se suman 55 USD de infraestructura, más las horas por la tarifa, más la herramienta proporcional,
+recomendado se suman 43 USD de infraestructura, más las horas por la tarifa, más la herramienta proporcional,
 y sobre ese total se aplica el margen.
 
 ## Qué falta confirmar
