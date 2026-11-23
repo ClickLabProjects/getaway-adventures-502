@@ -38,7 +38,22 @@ modelos más baratos. Así se ahorran tokens de Opus.
 5. **Revisión:** el líder lee los reportes y el `git diff --stat`, y abre solo lo que tenga riesgo.
    - Si el cambio toca SQL, RLS, dinero o datos personales, pasa por `seguridad`.
    - Si es grande, pasa por `revisor`.
-6. **Integrar:** el líder hace el commit en una rama. Nunca se hace push directo a `main`, porque eso publica el sitio.
+6. **Integrar:** el líder hace el commit en una rama de trabajo, la sube y abre un PR **hacia `dev`**.
+
+## Ramas y ambientes
+
+| Rama | Ambiente | Quién la toca |
+|---|---|---|
+| `main` | Producción | **Nadie desde la IA.** Solo recibe `dev` cuando todo está listo, con un merge manual de una persona (CODEOWNERS: DieDiaz o Mynor454). |
+| `dev` | Pruebas (Pages en `/dev/`, puede usar su propia base de datos con las variables `*_DEV`) | Recibe los PRs de las ramas de trabajo. |
+| ramas de trabajo | Local | Se crean desde `dev` actualizado y vuelven a `dev` por PR. |
+
+- Antes de empezar: `git switch dev && git pull`, y luego `git switch -c <tipo>/<descripcion>`.
+  Tipos: `feat/`, `fix/`, `docs/`, `chore/`, `test/`. Ejemplo: `fix/csv-formulas`.
+- Una rama por funcionalidad o corrección; los PRs van siempre con base `dev`.
+- Ningún agente ni herramienta (Claude Code, Kiro u otra) hace push, merge ni PR hacia `main`, ni cambia la
+  configuración de ramas o de Pages.
+- Los agentes `dev-*` no hacen commits ni push: eso lo hace el líder después de revisar.
 
 ## Formato del encargo (obligatorio)
 
