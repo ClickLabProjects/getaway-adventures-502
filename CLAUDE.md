@@ -1,6 +1,10 @@
 # Getaway Adventures 502: cómo trabajamos con IA
 
-Sitio de reservaciones de tours (Vite + React + TypeScript en `src/`, Supabase en `supabase/`).
+Sitio de reservaciones de tours. Arquitectura aprobada en `docs/arquitectura/backend-propio-aws.md`:
+monorepo con frontend React (`apps/web`), API **NestJS** (`apps/api`), contratos compartidos (`packages/contratos`),
+migraciones SQL con dbmate (`db/migrations`) e infraestructura Terraform (`infra/`). PostgreSQL: Supabase como base
+de dev; AWS Lightsail en producción. Login con Cognito. El código en `src/` y `supabase/` es la versión anterior
+(BaaS) y se va retirando por pasos.
 El proyecto ya está vendido y va a producción. La revisión previa está en `docs/revision-pre-produccion.md`.
 
 ## Roles
@@ -11,9 +15,9 @@ modelos más baratos. Así se ahorran tokens de Opus.
 
 | Agente | Modelo | Para qué |
 |---|---|---|
-| `dev-backend` | Sonnet | Migraciones SQL, RLS, funciones, triggers, Edge Functions |
+| `dev-backend` | Sonnet | API NestJS, migraciones SQL (dbmate), triggers, Terraform |
 | `dev-frontend` | Sonnet | Páginas, componentes, CSS, i18n, panel admin |
-| `dev-pruebas` | Sonnet | pgTAP, Vitest, Playwright, CI de pruebas |
+| `dev-pruebas` | Sonnet | pgTAP, integración y autorización de la API, Vitest, Playwright, CI |
 | `dev-mecanico` | Haiku | Cambios repetitivos que ya están especificados al detalle |
 | `product-owner` | Opus | Define el producto: módulos, roles, historias, reglas y fases (escribe solo en `docs/producto/`) |
 | `arquitecto` | Opus | Diseño, estructura y capas, escalabilidad (solo lectura) |
@@ -55,11 +59,11 @@ entender qué hacer, el encargo estaba incompleto.
 
 ## Reglas de seguridad
 
-- Ningún agente ejecuta `npm run db:*`, `make-admin`, `supabase db push` ni nada contra la base de producción.
-  Esos pasos los hace una persona.
+- Ningún agente ejecuta `npm run db:*`, `make-admin`, `dbmate` contra bases remotas, `terraform apply` ni
+  despliegues. Los agentes solo usan Postgres local en Docker. Esos pasos los hace una persona o el CI aprobado.
 - Nadie lee ni muestra `.env`.
-- Las reglas de dinero, cupo y permisos viven en Postgres o en el servidor, nunca solo en React.
-- Las migraciones ya aplicadas no se editan: siempre se crea una nueva en `supabase/migrations/`.
+- Las reglas de dinero, cupo y permisos viven en la API (transacciones) y en SQL (constraints y triggers), nunca solo en React.
+- Las migraciones ya aplicadas no se editan: siempre se crea una nueva en `db/migrations/`.
 
 ## Seguimiento de agentes y modelos
 
