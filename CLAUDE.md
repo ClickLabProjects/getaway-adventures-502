@@ -15,6 +15,7 @@ modelos más baratos. Así se ahorran tokens de Opus.
 | `dev-frontend` | Sonnet | Páginas, componentes, CSS, i18n, panel admin |
 | `dev-pruebas` | Sonnet | pgTAP, Vitest, Playwright, CI de pruebas |
 | `dev-mecanico` | Haiku | Cambios repetitivos que ya están especificados al detalle |
+| `product-owner` | Opus | Define el producto: módulos, roles, historias, reglas y fases (escribe solo en `docs/producto/`) |
 | `arquitecto` | Opus | Diseño, estructura y capas, escalabilidad (solo lectura) |
 | `seguridad` | Opus | RLS, funciones `security definer`, datos personales (solo lectura) |
 | `revisor` | Opus | Verifica los hallazgos de los demás y la cobertura (solo lectura) |
@@ -24,7 +25,11 @@ modelos más baratos. Así se ahorran tokens de Opus.
 
 ## Flujo de cada funcionalidad
 
-1. **Diseño:** para algo nuevo o que toca varias capas, primero el `arquitecto` propone. El líder decide.
+0. **Producto:** toda funcionalidad nueva parte de `docs/producto/`. Si no está definida ahí, primero pasa por el
+   `product-owner`, que trabaja por rondas: entrega un borrador y preguntas, el dueño responde y el agente actualiza.
+   Las decisiones de negocio las toma el dueño o el cliente, nunca un agente.
+1. **Diseño:** para algo nuevo o que toca varias capas, primero el `arquitecto` propone a partir de `docs/producto/`.
+   El líder decide.
 2. **Encargos:** el líder parte el trabajo en tareas pequeñas, cada una para un agente, con el formato de abajo.
 3. **Programar:** se lanzan los `dev-*`.
    - Si dos tareas tocan archivos distintos, van en paralelo y cada una con `isolation: "worktree"`.
