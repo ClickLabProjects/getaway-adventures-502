@@ -61,6 +61,14 @@ entender qué hacer, el encargo estaba incompleto.
 `node .claude/scripts/uso-agentes.mjs` lista cada agente de la sesión más reciente con su modelo real, sus tokens y
 su estado. Para todas las sesiones del proyecto, agrega `--todas`.
 
-Un agente nuevo se reconoce en la misma sesión. Si cambias el `model:` de un agente que ya existía, el cambio
-solo aplica en una **sesión nueva**: la sesión abierta conserva la configuración anterior.
-Con el script se puede verificar qué modelo usó realmente cada agente.
+Claude Code vigila `.claude/agents/`. Los agentes nuevos y los cambios de `model:` se aplican solos, sin reiniciar,
+pero tardan unos segundos: el agente que se lance justo después de editar todavía puede salir con la configuración
+anterior. Con el script se verifica qué modelo usó realmente cada agente.
+
+El modelo se decide en este orden (gana el primero que exista):
+1. El parámetro `model` que el líder pasa al lanzar el agente.
+2. El campo `model:` del archivo del agente.
+3. La variable `CLAUDE_CODE_SUBAGENT_MODEL`.
+4. El modelo de la sesión.
+
+El líder no pasa `model` al lanzar un agente, salvo que quiera cambiarlo a propósito para esa tarea.
